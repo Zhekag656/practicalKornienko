@@ -2,8 +2,14 @@ const fs = require("fs");
 const readline = require("readline-sync");
 const fileSystem = require('./filesystem');
 const chalk = require("chalk");
+const {readCatalog, goBack, goForward} = require("./filesystem");
+const events = require("events");
+const emitter = new events.EventEmitter();
+
 
 let currentPath = __dirname;
+emitter.on('readCatalog', readCatalog)
+emitter.on('goBack', goBack)
 
 const menuItems = [
     "Перегляд вмісту каталогу",
@@ -36,14 +42,15 @@ function userMenuChoice(input){
 
     switch (option){
         case menuItems[0]:
-            printCurrentCatalog(currentPath);
+            emitter.emit('readCatalog')
             mainMenu();
             break;
         case menuItems[1]:
-            console.log("2")
+            emitter.emit('goBack');
+            mainMenu();
             break;
         case menuItems[2]:
-            console.log("3")
+            goForward()
             break;
         case menuItems[3]:
             console.log("4")
